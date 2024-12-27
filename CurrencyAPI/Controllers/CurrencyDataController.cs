@@ -19,16 +19,23 @@ namespace CurrencyAPI.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet(Name = "GetCurrencyData/{currencyCode}/{date}")]
+        public IEnumerable<CurrencyData> Get(string currencyCode, DateTime? date)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            if (!date.HasValue)
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = AvailableCurrencies[Random.Shared.Next(AvailableCurrencies.Length)]
-            })
-            .ToArray();
+                date = DateTime.Now;
+            }
+
+            if (date.Value > DateTime.Now) {
+                throw new ArgumentException("Wyst¹pi³a próba pobrania kursu z przysz³oœci!");
+            }
+
+            if (!AvailableCurrencies.Contains(currencyCode)) {
+                throw new ArgumentException("Nieznana waluta!");
+            }
+
+            throw new NotImplementedException();
         }
     }
 }
