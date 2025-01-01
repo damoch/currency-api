@@ -1,4 +1,6 @@
-﻿namespace CurrencyAPI.Data
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace CurrencyAPI.Data
 {
     public class CurrencyRate
     {
@@ -18,6 +20,15 @@
                 Date = Date
             };
         }
-    }
+        public static CurrencyRate FromDto(CurrencyDataDto dto)
+        {
+            return new CurrencyRate() {
+                CurrencyCode = dto.CurrencyCode,
+                SellRate = dto.SellRate,
+                Date = dto.Date,
+                BuyRate = dto.PurchaseRate
+            };
+        }
 
+    }
 }

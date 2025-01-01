@@ -37,27 +37,32 @@ namespace CurrencyAPI.Controllers
             {
                 throw new ArgumentException("Wyst¹pi³a próba pobrania kursu z przysz³oœci!");
             }
-
+            currencyCode = currencyCode.ToUpper();
             if (!AvailableCurrencies.Contains(currencyCode))
             {
                 throw new ArgumentException("Nieznana waluta!");
             }
 
-            //if not in database...
-            return await _nbpApiService.DownloadData(date.Value, currencyCode);
+            CurrencyDataDto result;
+            var instance = _dbContext.CurrencyRates.AsQueryable().FirstOrDefault(x => x.CurrencyCode == currencyCode && x.Date == date);
+            if (instance == null)
+            {
+                var dto = await _nbpApiService.DownloadData(date.Value, currencyCode);
+                using(var transaction = await _dbContext.Database.BeginTransactionAsync())
+                {
+                    var x = await _dbContext.CurrencyRates.AddAsync(CurrencyRate.FromDto(dto));
+                    await _dbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                result = dto;
+            }
+            else
+            {
+                result = instance.AsDto();
+            }
 
-            
-            //using (var transaction = _dbContext.Database.BeginTransaction())
-            //{
 
-            //}
-            //var instacne = _dbContext.CurrencyRates.FirstOrDefault(x => x.CurrencyCode == currencyCode && x.Date == date);
-            //if (instacne == null) { 
-            //}
-            //var result =  instacne.AsDto();
-
-
-            throw new NotImplementedException();
+            return result;
         }
     }
 }
