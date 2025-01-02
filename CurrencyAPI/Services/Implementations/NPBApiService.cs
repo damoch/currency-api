@@ -9,15 +9,26 @@ namespace CurrencyAPI.Shared.Implementations
     //https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
     public class NPBApiService : INPBApiService
     {
+        private ILogger<NPBApiService> _logger;
+
+        public NPBApiService(ILogger<NPBApiService> logger)
+        {
+            _logger = logger;
+        }
+
         public async Task<CurrencyDataDto> DownloadData(DateTime date, string currencyCode)
         {
             CurrencyDataDto result;
             using (HttpClient client = new())
             {
                 client.DefaultRequestHeaders.Accept.Clear();
-                //client.BaseAddress = new Uri($"https://api.nbp.pl/api/exchangerates/rates/a/{currencyCode}");
-                var nbpResponse = await client.GetAsync($"https://api.nbp.pl/api/exchangerates/rates/a/{currencyCode}");
-
+                var requestUri = $"https://api.nbp.pl/api/exchangerates/rates/a/{currencyCode}";//zmienic zapytanie!!!!
+                var nbpResponse = await client.GetAsync(requestUri);
+                if (!nbpResponse.IsSuccessStatusCode)
+                {
+                    _logger.LogError("Failed NBP API Request {0}", requestUri);
+                    return null;
+                }
                 nbpResponse.EnsureSuccessStatusCode();
 
                 string json = await nbpResponse.Content.ReadAsStringAsync();

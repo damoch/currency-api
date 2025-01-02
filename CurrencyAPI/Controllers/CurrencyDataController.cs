@@ -9,42 +9,39 @@ namespace CurrencyAPI.Controllers
     [Route("[controller]")]
     public class CurrencyDataController : ControllerBase
     {
-        private static readonly string _baseCurrency = "PLN";
-        private static readonly string[] AvailableCurrencies = new[]
-        {
-            "EUR", "USD", "RBL", "BTC", "CHF"
-        };
-
         private readonly ILogger<CurrencyDataController> _logger;
         private readonly ICurrencyDataService _currencyService;
-        private readonly ApplicationDbContext _dbContext;
 
-        public CurrencyDataController(ILogger<CurrencyDataController> logger, ICurrencyDataService currencyService, ApplicationDbContext dbContext)
+        public CurrencyDataController(ILogger<CurrencyDataController> logger, ICurrencyDataService currencyService)
         {
             _logger = logger;
             _currencyService = currencyService;
-            _dbContext = dbContext;
         }
 
         [HttpGet(Name = "GetCurrencyData/{currencyCode}/{date}")]
         public async Task<IActionResult> Get(string currencyCode, DateTime? date)
         {
+            if (!_currencyService.ValidateCurrencyCode(currencyCode))
+            {
+                return BadRequest("Nieobslugiwana waluta");
+            }
+
             if (!date.HasValue)
             {
                 date = DateTime.Today;
             }
-
-            if (date.Value > DateTime.Now)
+            else if (!_currencyService.ValidateDate(date.Value))
             {
-                NotFound("Wyst¹pi³a próba pobrania kursu z przysz³oœci!");
-            }
-            currencyCode = currencyCode.ToUpper();
-            if (!AvailableCurrencies.Contains(currencyCode))
-            {
-                NotFound("Nieznana waluta!");
+                return BadRequest("Podana data znajduje sie poza obslugiwanym zakresem");
             }
 
-            CurrencyDataDto result = await _currencyService.GetCurrencyDataFor(currencyCode, date.Value);
+            var result = await _currencyService.GetCurrencyDataFor(currencyCode, date.Value);
+
+            if(result == null)
+            {
+                return BadRequest("Wystapil blad serwera. Prosze sprobowac pozniej.");
+            }
+
             return Ok(result);
         }
     }

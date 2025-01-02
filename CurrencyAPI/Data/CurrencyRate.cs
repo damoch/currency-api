@@ -4,7 +4,7 @@ namespace CurrencyAPI.Data
 {
     public class CurrencyRate
     {
-        public int Id { get; set; }
+        public int Id { get; set; } // Technicznie niepotrzebny, ale zachowuje go dla celow ewentualnej dalszej rozbudowy
         public string CurrencyCode { get; set; }
         public decimal BuyRate { get; set; }
         public decimal SellRate { get; set; }
