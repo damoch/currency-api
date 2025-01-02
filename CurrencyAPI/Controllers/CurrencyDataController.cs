@@ -1,4 +1,5 @@
 using CurrencyAPI.Data;
+using CurrencyAPI.Services.Abstracts;
 using CurrencyAPI.Shared.Abstracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,18 +16,18 @@ namespace CurrencyAPI.Controllers
         };
 
         private readonly ILogger<CurrencyDataController> _logger;
-        private readonly INPBApiService _nbpApiService;
+        private readonly ICurrencyDataService _currencyService;
         private readonly ApplicationDbContext _dbContext;
 
-        public CurrencyDataController(ILogger<CurrencyDataController> logger, INPBApiService nBPApiService, ApplicationDbContext dbContext)
+        public CurrencyDataController(ILogger<CurrencyDataController> logger, ICurrencyDataService currencyService, ApplicationDbContext dbContext)
         {
             _logger = logger;
-            _nbpApiService = nBPApiService;
+            _currencyService = currencyService;
             _dbContext = dbContext;
         }
 
         [HttpGet(Name = "GetCurrencyData/{currencyCode}/{date}")]
-        public async Task<CurrencyDataDto> Get(string currencyCode, DateTime? date)
+        public async Task<IActionResult> Get(string currencyCode, DateTime? date)
         {
             if (!date.HasValue)
             {
@@ -35,34 +36,16 @@ namespace CurrencyAPI.Controllers
 
             if (date.Value > DateTime.Now)
             {
-                throw new ArgumentException("Wyst¹pi³a próba pobrania kursu z przysz³oœci!");
+                NotFound("Wyst¹pi³a próba pobrania kursu z przysz³oœci!");
             }
             currencyCode = currencyCode.ToUpper();
             if (!AvailableCurrencies.Contains(currencyCode))
             {
-                throw new ArgumentException("Nieznana waluta!");
+                NotFound("Nieznana waluta!");
             }
 
-            CurrencyDataDto result;
-            var instance = _dbContext.CurrencyRates.AsQueryable().FirstOrDefault(x => x.CurrencyCode == currencyCode && x.Date == date);
-            if (instance == null)
-            {
-                var dto = await _nbpApiService.DownloadData(date.Value, currencyCode);
-                using(var transaction = await _dbContext.Database.BeginTransactionAsync())
-                {
-                    var x = await _dbContext.CurrencyRates.AddAsync(CurrencyRate.FromDto(dto));
-                    await _dbContext.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                }
-                result = dto;
-            }
-            else
-            {
-                result = instance.AsDto();
-            }
-
-
-            return result;
+            CurrencyDataDto result = await _currencyService.GetCurrencyDataFor(currencyCode, date.Value);
+            return Ok(result);
         }
     }
 }

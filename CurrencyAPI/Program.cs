@@ -1,5 +1,7 @@
 
 using CurrencyAPI.Data;
+using CurrencyAPI.Services.Abstracts;
+using CurrencyAPI.Services.Implementations;
 using CurrencyAPI.Shared.Abstracts;
 using CurrencyAPI.Shared.Implementations;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +16,7 @@ namespace CurrencyAPI
 
             // Add services to the container.
             builder.Services.AddScoped<INPBApiService, NPBApiService>();
+            builder.Services.AddScoped<ICurrencyDataService, CurrencyDataService>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
