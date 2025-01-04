@@ -15,7 +15,7 @@ namespace CurrencyAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddScoped<INPBApiService, NPBApiService>();
+            builder.Services.AddScoped<IRemoteApiService, NPBApiService>();
             builder.Services.AddScoped<ICurrencyDataService, CurrencyDataService>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

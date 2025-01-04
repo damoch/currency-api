@@ -2,7 +2,7 @@
 
 namespace CurrencyAPI.Shared.Abstracts
 {
-    public interface INPBApiService
+    public interface IRemoteApiService
     {
         Task<CurrencyDataDto> DownloadData(DateTime date, string currencyCode);
     }

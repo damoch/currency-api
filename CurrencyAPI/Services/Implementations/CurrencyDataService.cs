@@ -7,7 +7,7 @@ namespace CurrencyAPI.Services.Implementations
     public class CurrencyDataService : ICurrencyDataService
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly INPBApiService _nbpApiService;
+        private readonly IRemoteApiService _nbpApiService;
         private readonly ILogger<CurrencyDataService> _logger;
         private static readonly string[] AvailableCurrencies = new[]
         {
@@ -16,7 +16,7 @@ namespace CurrencyAPI.Services.Implementations
 
         private static DateTime OldestPossibleDate => new DateTime(2002, 1, 2);//NBP nie udostepnia danych starszych od tej daty
 
-        public CurrencyDataService(ApplicationDbContext dbContext, INPBApiService nbpApiService, ILogger<CurrencyDataService> logger)
+        public CurrencyDataService(ApplicationDbContext dbContext, IRemoteApiService nbpApiService, ILogger<CurrencyDataService> logger)
         {
             _dbContext = dbContext;
             _nbpApiService = nbpApiService;
