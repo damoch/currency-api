@@ -36,7 +36,7 @@ namespace CurrencyAPI.Controllers
                 return NotFound("Podana data znajduje sie poza obslugiwanym zakresem");
             }
 
-            if (await _validationService.IsHoliday(date.Value))
+            if (_validationService.IsHoliday(date.Value))
             {
                 return NotFound("Dzien wolny od pracy - brak danych");
             }

@@ -18,7 +18,6 @@ namespace CurrencyAPI
             // Add services to the container.
             builder.Services.AddScoped<IRemoteApiService, NPBApiService>();
             builder.Services.AddScoped<ICurrencyDataService, CurrencyDataService>();
-            builder.Services.AddScoped<HolidayClient, HolidayClient>();
             builder.Services.AddScoped<IValidationSevice, NBPApiValidationService>();
 
             builder.Services.AddControllers();
