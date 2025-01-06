@@ -19,6 +19,7 @@ namespace CurrencyAPI.Services.Implementations
 
         public async Task<CurrencyDataDto> GetCurrencyDataFor(string currencyCode, DateTime date)
         {
+            currencyCode = currencyCode.ToUpper();
             CurrencyDataDto result;
             var instance = _dbContext.CurrencyRates.AsQueryable().FirstOrDefault(x => x.CurrencyCode == currencyCode && x.Date == date);
             if (instance == null)
@@ -27,15 +28,23 @@ namespace CurrencyAPI.Services.Implementations
 
                 if(dto == null)
                 {
-                    //_logger.LogError("Fa")
+                    _logger.LogError("Download failed {0} with date {1}", currencyCode, date);
                     return null;
                 }
-
                 using (var transaction = await _dbContext.Database.BeginTransactionAsync())
                 {
-                    var x = await _dbContext.CurrencyRates.AddAsync(CurrencyRate.FromDto(dto));
-                    await _dbContext.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                    try
+                    {
+                        var x = await _dbContext.CurrencyRates.AddAsync(CurrencyRate.FromDto(dto));
+                        await _dbContext.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        return null;
+                    }
+
                 }
                 result = dto;
             }

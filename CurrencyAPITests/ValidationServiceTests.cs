@@ -20,8 +20,8 @@ namespace CurrencyAPITests
             DateTime dateInFuture = DateTime.Now.AddDays(1);
             DateTime dateInThePast = new DateTime(1970, 1, 1);
 
-            Assert.IsFalse(_validationService.ValidateDate(dateInFuture));
-            Assert.IsFalse(_validationService.ValidateDate(dateInThePast));
+            Assert.That(!_validationService.ValidateDate(dateInFuture));
+            Assert.That(!_validationService.ValidateDate(dateInThePast));
         }
 
         [Test]
@@ -29,21 +29,21 @@ namespace CurrencyAPITests
         { 
             DateTime saturday = new DateTime(2025, 1, 4);
 
-            Assert.IsTrue(_validationService.IsHoliday(saturday));
+            Assert.That(_validationService.IsHoliday(saturday));
         }
 
         [Test]
         public void ValidateCurrencyCode_NullAndEmptyCheck()
         {
-            Assert.IsFalse(_validationService.IsValidCurrencyCode(null));
-            Assert.IsFalse(_validationService.IsValidCurrencyCode(""));
+            Assert.That(!_validationService.IsValidCurrencyCode(null));
+            Assert.That(!_validationService.IsValidCurrencyCode(""));
         }
 
         [Test]
         public void ValidateCurrencyCode_CorrectCodeCheck()
         {
-            Assert.IsTrue(_validationService.IsValidCurrencyCode("EUR"));
-            Assert.IsTrue(_validationService.IsValidCurrencyCode("usd"));
+            Assert.That(_validationService.IsValidCurrencyCode("EUR"));
+            Assert.That(_validationService.IsValidCurrencyCode("usd"));
         }
     }
 }

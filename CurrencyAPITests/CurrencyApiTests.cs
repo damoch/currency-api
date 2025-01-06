@@ -49,14 +49,14 @@ namespace CurrencyAPITests
             var result = await _controller.Get(correctCurrencyCode, date);
 
             // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
 
 
             // Act
             var result2 = await _controller.Get(incorrectCurrencyCode, date);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result2);
+            Assert.That(result2, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace CurrencyAPITests
             var result = await _controller.Get(currencyCode, date);
 
             // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
         }
 
     }
