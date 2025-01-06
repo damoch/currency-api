@@ -1,6 +1,8 @@
 ﻿using CurrencyAPI.Data;
 using CurrencyAPI.Services.Abstracts;
 using CurrencyAPI.Shared.Abstracts;
+using Nager.Holiday;
+using System.ComponentModel;
 
 namespace CurrencyAPI.Services.Implementations
 {
@@ -9,12 +11,6 @@ namespace CurrencyAPI.Services.Implementations
         private readonly ApplicationDbContext _dbContext;
         private readonly IRemoteApiService _nbpApiService;
         private readonly ILogger<CurrencyDataService> _logger;
-        private static readonly string[] AvailableCurrencies = new[]
-        {
-            "EUR", "USD", "RBL", "BTC", "CHF"
-        };
-
-        private static DateTime OldestPossibleDate => new DateTime(2002, 1, 2);//NBP nie udostepnia danych starszych od tej daty
 
         public CurrencyDataService(ApplicationDbContext dbContext, IRemoteApiService nbpApiService, ILogger<CurrencyDataService> logger)
         {
@@ -22,6 +18,7 @@ namespace CurrencyAPI.Services.Implementations
             _nbpApiService = nbpApiService;
             _logger = logger;
         }
+
         public async Task<CurrencyDataDto> GetCurrencyDataFor(string currencyCode, DateTime date)
         {
             CurrencyDataDto result;
@@ -49,16 +46,6 @@ namespace CurrencyAPI.Services.Implementations
                 result = instance.AsDto();
             }
             return result;
-        }
-
-        public bool ValidateCurrencyCode(string currencyCode)
-        {
-            return AvailableCurrencies.Contains(currencyCode.ToUpper());
-        }
-
-        public bool ValidateDate(DateTime date)
-        {
-            return date >= OldestPossibleDate && date <= DateTime.Now;
         }
     }
 }

@@ -1,6 +1,4 @@
-using CurrencyAPI.Data;
 using CurrencyAPI.Services.Abstracts;
-using CurrencyAPI.Shared.Abstracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CurrencyAPI.Controllers
@@ -11,17 +9,19 @@ namespace CurrencyAPI.Controllers
     {
         private readonly ILogger<CurrencyDataController> _logger;
         private readonly ICurrencyDataService _currencyService;
+        private readonly IValidationSevice _validationService;
 
-        public CurrencyDataController(ILogger<CurrencyDataController> logger, ICurrencyDataService currencyService)
+        public CurrencyDataController(ILogger<CurrencyDataController> logger, ICurrencyDataService currencyService, IValidationSevice validationService)
         {
             _logger = logger;
             _currencyService = currencyService;
+            _validationService = validationService;
         }
 
         [HttpGet(Name = "GetCurrencyData/{currencyCode}/{date}")]
         public async Task<IActionResult> Get(string currencyCode, DateTime? date)
         {
-            if (!_currencyService.ValidateCurrencyCode(currencyCode))
+            if (!_validationService.IsValidCurrencyCode(currencyCode))
             {
                 return BadRequest("Nieobslugiwana waluta");
             }
@@ -30,9 +30,15 @@ namespace CurrencyAPI.Controllers
             {
                 date = DateTime.Today;
             }
-            else if (!_currencyService.ValidateDate(date.Value))
+
+            if (!_validationService.ValidateDate(date.Value))
             {
-                return BadRequest("Podana data znajduje sie poza obslugiwanym zakresem");
+                return NotFound("Podana data znajduje sie poza obslugiwanym zakresem");
+            }
+
+            if (await _validationService.IsHoliday(date.Value))
+            {
+                return NotFound("Dzien wolny od pracy - brak danych");
             }
 
             var result = await _currencyService.GetCurrencyDataFor(currencyCode, date.Value);
