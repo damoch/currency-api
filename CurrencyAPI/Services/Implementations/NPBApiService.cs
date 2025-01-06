@@ -56,6 +56,7 @@ namespace CurrencyAPI.Shared.Implementations
             return new CurrencyDataDto
             {
                 CurrencyCode = Code,
+                CurrencyName = Currency,
                 Date = date,
                 PurchaseRate = Rates[0].Bid,
                 SellRate = Rates[0].Ask,

@@ -1,8 +1,6 @@
 ﻿using CurrencyAPI.Data;
 using CurrencyAPI.Services.Abstracts;
 using CurrencyAPI.Shared.Abstracts;
-using Nager.Holiday;
-using System.ComponentModel;
 
 namespace CurrencyAPI.Services.Implementations
 {
