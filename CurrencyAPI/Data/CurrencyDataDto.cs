@@ -2,6 +2,10 @@ namespace CurrencyAPI.Data
 {
     public class CurrencyDataDto
     {
+        public CurrencyDataDto()
+        {
+            
+        }
         public DateTime Date { get; set; }
 
         public string CurrencyCode { get; set; }
