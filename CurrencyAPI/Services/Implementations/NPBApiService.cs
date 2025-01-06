@@ -1,5 +1,4 @@
-﻿using Azure;
-using CurrencyAPI.Data;
+﻿using CurrencyAPI.Data;
 using CurrencyAPI.Shared.Abstracts;
 using Newtonsoft.Json;
 

@@ -18,7 +18,7 @@ namespace CurrencyAPI.Services.Implementations
 
         public bool IsValidCurrencyCode(string code)
         {
-            return string.IsNullOrWhiteSpace(code) || AvailableCurrencies.Contains(code.ToUpper());
+            return !string.IsNullOrWhiteSpace(code) && AvailableCurrencies.Contains(code.ToUpper());
         }
 
         public bool ValidateDate(DateTime date)
