@@ -59,6 +59,12 @@ namespace CurrencyAPITests
             _currencyDataService = new CurrencyDataService(_dbContext, _remoteApiMock.Object, _loggerMock.Object);
         }
 
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            _dbContext.Dispose();
+        }
+
         [Test]
         public async Task TryAdding_EntryExists()
         {
