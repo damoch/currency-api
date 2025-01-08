@@ -15,6 +15,14 @@ namespace CurrencyAPI.Data
             modelBuilder.Entity<CurrencyRate>()
                 .HasIndex(cr => new { cr.CurrencyCode, cr.Date })
                 .HasDatabaseName("IX_CurrencyCode_Date");
+
+            modelBuilder.Entity<CurrencyRate>()
+                .Property(cr => cr.BuyRate)
+                .HasColumnType("decimal(18, 6)"); //Większa precyzja potrzebna do dokladnego skladowania danych
+
+            modelBuilder.Entity<CurrencyRate>()
+                .Property(cr => cr.SellRate)
+                .HasColumnType("decimal(18, 6)");
         }
 
     }
