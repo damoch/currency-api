@@ -7,7 +7,7 @@ API ma dostęp do bazy danych, w której zapisywane są  pobrane dane dotyczące
 
 Pobranie repozytorium 
 
-`git pull https://github.com/damoch/currency-api`
+`git pull https://github.com/damoch/currency-api` \
 `cd currency-api/CurrencyAPI`
 
 Przygotowanie bazy danych
@@ -23,6 +23,12 @@ Przykładowe zapytanie:
 
 `curl http://localhost:XXX/CurrencyData?currencyCode=eur`
 (Nalezy zmienić XXX na odpowiedni numer portu)
+
+## Testy
+
+Po pobraniu repozytorium można uruchomić testy jednostkowe. Robimy to komendą 
+
+`dotnet test`
 
 ## Roadmap
 
