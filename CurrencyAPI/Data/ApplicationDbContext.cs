@@ -7,6 +7,7 @@ namespace CurrencyAPI.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<CurrencyRate> CurrencyRates { get; set; }
+        public DbSet<HolidayDate> HolidayDates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

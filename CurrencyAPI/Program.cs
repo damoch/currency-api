@@ -19,6 +19,7 @@ namespace CurrencyAPI
             builder.Services.AddScoped<IRemoteApiService, NPBApiService>();
             builder.Services.AddScoped<ICurrencyDataService, CurrencyDataService>();
             builder.Services.AddScoped<IValidationSevice, NBPApiValidationService>();
+            builder.Services.AddScoped<HolidayClient, HolidayClient>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -26,6 +27,8 @@ namespace CurrencyAPI
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddHostedService<HolidayHostedService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
